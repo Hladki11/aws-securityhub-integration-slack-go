@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 
 	awsEvent "github.com/aws/aws-lambda-go/events"
@@ -20,10 +21,21 @@ func New(cfg *Config) *App {
 	}
 }
 
+type EventDetail struct {
+	Findings []json.RawMessage `json:"findings"`
+}
+
 func (a *App) ParseEvent(e awsEvent.CloudWatchEvent) (events.SecurityHubEvent, error) {
 	switch e.DetailType {
-	case "Security Hub Findings - Imported":
-		return events.NewSecurityHubFinding(e.Detail)
+	case "Findings Imported V2":
+		var detail EventDetail
+		if err := json.Unmarshal(e.Detail, &detail); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event detail: %w", err)
+		}
+		if len(detail.Findings) == 0 {
+			return nil, fmt.Errorf("no findings in event")
+		}
+		return events.NewSecurityHubFinding(detail.Findings[0])
 	default:
 		return nil, fmt.Errorf("unknown cloudwatch event type: %s", e.DetailType)
 	}

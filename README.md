@@ -72,16 +72,18 @@ cd dist && zip deployment.zip bootstrap && cd ..
     ```json
     {
       "source": ["aws.securityhub"],
-      "detail-type": ["Security Hub Findings - Imported"]
+      "detail-type": ["Findings Imported V2"]
     }
    ```
    Optional: Filter by severity (recommended for high-volume environments):
     ```json
     {
       "source": ["aws.securityhub"],
-      "detail-type": ["Security Hub Findings - Imported"],
+      "detail-type": ["Findings Imported V2"],
       "detail": {
-        "severity": ["Critical", "High"]
+        "findings": {
+          "severity": ["Critical", "High"]
+        }
       }
     }
    ```
@@ -89,11 +91,13 @@ cd dist && zip deployment.zip bootstrap && cd ..
     ```json
     {
       "source": ["aws.securityhub"],
-      "detail-type": ["Security Hub Findings - Imported"],
+      "detail-type": ["Findings Imported V2"],
       "detail": {
-        "metadata": {
-          "product": {
-            "name": ["GuardDuty", "Inspector"]
+        "findings": {
+          "metadata": {
+            "product": {
+              "name": ["GuardDuty", "Inspector"]
+            }
           }
         }
       }
