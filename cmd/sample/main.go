@@ -38,14 +38,22 @@ func main() {
 	}
 
 	for i, finding := range findings {
+		detail := map[string]interface{}{
+			"findings": []json.RawMessage{finding},
+		}
+		detailBytes, err := json.Marshal(detail)
+		if err != nil {
+			log.Fatalf("marshal detail: %v", err)
+		}
+
 		evt := awsevents.CloudWatchEvent{
 			Version:    "0",
 			ID:         fmt.Sprintf("sample-%d", i),
-			DetailType: "Security Hub Findings - Imported",
+			DetailType: "Findings Imported V2",
 			Source:     "aws.securityhub",
 			AccountID:  "123456789012",
 			Region:     "us-east-1",
-			Detail:     finding,
+			Detail:     detailBytes,
 		}
 
 		if err := a.Process(evt); err != nil {
