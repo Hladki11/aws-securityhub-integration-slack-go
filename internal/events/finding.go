@@ -161,6 +161,12 @@ func (shf *SecurityHubV2Finding) SlackMessage(consoleURL, accessPortalURL, acces
 	details := slack.NewSectionBlock(nil, detailFields, nil)
 	blocks = append(blocks, details)
 
+	findingIDSection := slack.NewSectionBlock(
+		slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*Finding ID*\n`%s`", shf.Metadata.UID), false, false),
+		nil, nil,
+	)
+	blocks = append(blocks, findingIDSection)
+
 	if len(shf.Resources) > 0 {
 		resource := shf.Resources[0]
 		var resourceFields []*slack.TextBlockObject
