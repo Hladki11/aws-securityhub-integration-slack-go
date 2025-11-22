@@ -296,7 +296,6 @@ func (shf *SecurityHubV2Finding) BuildConsoleUrl(consoleURL, accessPortalURL, ac
 		view = "vulnerabilities"
 	}
 
-	// https://883776786067-fwrss4sa.us-east-1.console.aws.amazon.com/securityhub/v2/home?region=us-east-1#/postureManagement?findingDetailId=b864b75ebfd1bf2a9c0353af5a446dd521ca0af231d56d671311494ecdcedbb8&detailPanelTabId=Resources
 	dst := fmt.Sprintf(
 		"%s/securityhub/v2/home?region=%s#/%s?findingDetailId=%s",
 		consoleURL, region, view, shf.Metadata.UID,
